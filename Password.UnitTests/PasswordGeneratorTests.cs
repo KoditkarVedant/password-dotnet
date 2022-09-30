@@ -23,7 +23,8 @@ public class PasswordGeneratorTests
                 { PasswordCharType.UpperCase, new RandomUpperCaseLetterProvider(systemSharedRandomNumberGenerator) },
                 { PasswordCharType.Digit, new RandomDigitProvider(systemSharedRandomNumberGenerator) },
                 { PasswordCharType.Symbol, new RandomSymbolProvider(systemSharedRandomNumberGenerator) }
-            }
+            },
+            systemSharedRandomNumberGenerator
         );
     }
 
@@ -33,15 +34,47 @@ public class PasswordGeneratorTests
     [InlineData(20)]
     public void Should_Return_Password_Of_Requested_Length(int length)
     {
+        // Arrange
+        _charDistributionMock
+            .Setup(x => x.Distribute(It.IsAny<IEnumerable<PasswordCharType>>(), length))
+            .Returns(new Dictionary<PasswordCharType, int>()
+            {
+                { PasswordCharType.LowerCase, length }
+            });
+
+        // Act
+        var password = _passwordGenerator.Generate(new PasswordOptions
+        {
+            Length = length,
+            IncludeLowerCaseLetters = true
+        });
+
+        // Assert
+        Assert.Equal(length, password.Length);
+        AssertHelpers.Count(password, char.IsLower, length);
+        AssertHelpers.Count(password, char.IsUpper, 0);
+        AssertHelpers.Count(password, char.IsDigit, 0);
+        AssertHelpers.Count(password, char.IsSymbol, 0);
+    }
+
+    [Fact(Skip = "Missing Feature: if user doesn't include any char type - create a password with only lowercase char")]
+    public void Should_Return_Password_Containing_Only_LowerLetters_If_No_Character_Type_Included()
+    {
+        // Arrange
+        const int length = 10;
+
+        // Act
         var password = _passwordGenerator.Generate(new PasswordOptions
         {
             Length = length
         });
 
+        // Assert
         Assert.Equal(length, password.Length);
-        var passwordChars = password.ToCharArray();
-        // TODO: Make sure if user doesn't include any type of character then the password should be all lowercase.
-        AssertHelpers.Count(password, CharHelpers.IsEmpty, length);
+        AssertHelpers.Count(password, char.IsLower, length);
+        AssertHelpers.Count(password, char.IsUpper, 0);
+        AssertHelpers.Count(password, char.IsDigit, 0);
+        AssertHelpers.Count(password, char.IsSymbol, 0);
     }
 
     [Fact]

@@ -1,4 +1,6 @@
-﻿namespace Password.Core;
+﻿using System.Text;
+
+namespace Password.Core;
 
 public interface IPasswordGenerator
 {
@@ -9,6 +11,7 @@ public class PasswordGenerator : IPasswordGenerator
 {
     private readonly ICharDistribution _charDistribution;
     private readonly Dictionary<PasswordCharType, IRandomCharacterProvider> _randomCharacterProviders;
+    private readonly IRandomNumberGenerator _randomNumberGenerator;
 
     private static readonly IReadOnlyList<PasswordCharType> DefaultEnabledCharTypes = new List<PasswordCharType>()
     {
@@ -17,15 +20,17 @@ public class PasswordGenerator : IPasswordGenerator
 
     public PasswordGenerator(
         ICharDistribution charDistribution,
-        Dictionary<PasswordCharType, IRandomCharacterProvider> randomCharacterProviders)
+        Dictionary<PasswordCharType, IRandomCharacterProvider> randomCharacterProviders,
+        IRandomNumberGenerator randomNumberGenerator)
     {
         _charDistribution = charDistribution;
         _randomCharacterProviders = randomCharacterProviders;
+        _randomNumberGenerator = randomNumberGenerator;
     }
 
     public string Generate(PasswordOptions options)
     {
-        char[] chars = new char[options.Length];
+        var passwordCharQueue = new PriorityQueue<char, int>(options.Length);
 
         var charTypes = new Dictionary<PasswordCharType, bool>()
         {
@@ -48,42 +53,53 @@ public class PasswordGenerator : IPasswordGenerator
 
         var distribution = _charDistribution.Distribute(enabledTypes, options.Length);
 
-        var currentCharIndex = 0;
-
         if (options.IncludeLowerCaseLetters)
         {
-            AddRandomCharacters(PasswordCharType.LowerCase, distribution, chars, ref currentCharIndex);
+            AddRandomCharacters(PasswordCharType.LowerCase, distribution, passwordCharQueue);
         }
 
         if (options.IncludeUpperCaseLetters)
         {
-            AddRandomCharacters(PasswordCharType.UpperCase, distribution, chars, ref currentCharIndex);
+            AddRandomCharacters(PasswordCharType.UpperCase, distribution, passwordCharQueue);
         }
 
         if (options.IncludeDigits)
         {
-            AddRandomCharacters(PasswordCharType.Digit, distribution, chars, ref currentCharIndex);
+            AddRandomCharacters(PasswordCharType.Digit, distribution, passwordCharQueue);
         }
 
         if (options.IncludeSymbols)
         {
-            AddRandomCharacters(PasswordCharType.Symbol, distribution, chars, ref currentCharIndex);
+            AddRandomCharacters(PasswordCharType.Symbol, distribution, passwordCharQueue);
         }
 
-        return new string(chars);
+        return BuildPasswordString(passwordCharQueue);
+    }
+
+    private static string BuildPasswordString(PriorityQueue<char, int> passwordCharQueue)
+    {
+        var passwordBuilder = new StringBuilder();
+        while (passwordCharQueue.TryDequeue(out var element, out _))
+        {
+            passwordBuilder.Append(element);
+        }
+
+        return passwordBuilder.ToString();
     }
 
     private void AddRandomCharacters(
         PasswordCharType charType,
         IReadOnlyDictionary<PasswordCharType, int> distribution,
-        IList<char> chars,
-        ref int currentCharIndex)
+        PriorityQueue<char, int> chars)
     {
-        var provider = _randomCharacterProviders[charType];
         for (var i = 0; i < distribution[charType]; i++)
         {
-            chars[currentCharIndex] = provider.GetRandomCharacter();
-            currentCharIndex++;
+            var provider = _randomCharacterProviders[charType];
+            var randomChar = provider.GetRandomCharacter();
+
+            var randomInsertPosition = _randomNumberGenerator.Next(0, chars.Count + 1);
+
+            chars.Enqueue(randomChar, randomInsertPosition);
         }
     }
 }
