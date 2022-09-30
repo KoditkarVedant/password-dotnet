@@ -2,6 +2,7 @@ namespace Password.Core;
 
 public static class Constants
 {
-    public static string LowerLetters = "abcdefghijklmnopqrstuvwxyz";
-    public static string UpperLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    public const string LowerLetters = "abcdefghijklmnopqrstuvwxyz";
+    public const string UpperLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    public const string Digits = "0123456789";
 }
