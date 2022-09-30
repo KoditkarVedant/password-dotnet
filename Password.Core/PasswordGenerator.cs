@@ -9,9 +9,14 @@ public class PasswordGenerator : IPasswordGenerator
 {
     private readonly ICharDistribution _charDistribution;
 
-    public PasswordGenerator(ICharDistribution charDistribution)
+    private readonly Dictionary<string, IRandomCharacterProvider> _randomCharacterProviders;
+
+    public PasswordGenerator(
+        ICharDistribution charDistribution,
+        Dictionary<string, IRandomCharacterProvider> randomCharacterProviders)
     {
         _charDistribution = charDistribution;
+        _randomCharacterProviders = randomCharacterProviders;
     }
 
     public string Generate(PasswordOptions options)
@@ -43,48 +48,38 @@ public class PasswordGenerator : IPasswordGenerator
 
         if (options.IncludeLowerCaseLetters)
         {
-            for (var i = 0; i < distribution["LowerCase"]; i++)
-            {
-                var randomLowerCharacterIndex = Random.Shared.Next(0, Constants.LowerLetters.Length);
-
-                chars[currentCharIndex] = Constants.LowerLetters[randomLowerCharacterIndex];
-                currentCharIndex++;
-            }
+            AddRandomCharacters("LowerCase", distribution, chars, ref currentCharIndex);
         }
 
         if (options.IncludeUpperCaseLetters)
         {
-            for (var i = 0; i < distribution["UpperCase"]; i++)
-            {
-                var randomUpperCharacterIndex = Random.Shared.Next(0, Constants.UpperLetters.Length);
-
-                chars[currentCharIndex] = Constants.UpperLetters[randomUpperCharacterIndex];
-                currentCharIndex++;
-            }
+            AddRandomCharacters("UpperCase", distribution, chars, ref currentCharIndex);
         }
 
         if (options.IncludeDigits)
         {
-            for (var i = 0; i < distribution["Digits"]; i++)
-            {
-                var randomDigitCharacterIndex = Random.Shared.Next(0, Constants.Digits.Length);
-
-                chars[currentCharIndex] = Constants.Digits[randomDigitCharacterIndex];
-                currentCharIndex++;
-            }
+            AddRandomCharacters("Digits", distribution, chars, ref currentCharIndex);
         }
 
         if (options.IncludeSymbols)
         {
-            for (var i = 0; i < distribution["Symbols"]; i++)
-            {
-                var randomSymbolCharacterIndex = Random.Shared.Next(0, Constants.Symbols.Length);
-
-                chars[currentCharIndex] = Constants.Symbols[randomSymbolCharacterIndex];
-                currentCharIndex++;
-            }
+            AddRandomCharacters("Symbols", distribution, chars, ref currentCharIndex);
         }
 
         return new string(chars);
+    }
+
+    private void AddRandomCharacters(
+        string charType,
+        IReadOnlyDictionary<string, int> distribution,
+        IList<char> chars,
+        ref int currentCharIndex)
+    {
+        var provider = _randomCharacterProviders[charType];
+        for (var i = 0; i < distribution[charType]; i++)
+        {
+            chars[currentCharIndex] = provider.GetRandomCharacter();
+            currentCharIndex++;
+        }
     }
 }

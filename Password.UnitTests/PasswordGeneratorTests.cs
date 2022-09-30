@@ -13,7 +13,17 @@ public class PasswordGeneratorTests
     public PasswordGeneratorTests()
     {
         _charDistributionMock = new Mock<ICharDistribution>();
-        _passwordGenerator = new PasswordGenerator(_charDistributionMock.Object);
+
+        _passwordGenerator = new PasswordGenerator(
+            _charDistributionMock.Object,
+            new Dictionary<string, IRandomCharacterProvider>
+            {
+                { "LowerCase", new RandomLowerCaseLetterProvider() },
+                { "UpperCase", new RandomUpperCaseLetterProvider() },
+                { "Digits", new RandomDigitProvider() },
+                { "Symbols", new RandomSymbolProvider() }
+            }
+        );
     }
 
     [Theory]
