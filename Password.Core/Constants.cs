@@ -1,6 +1,6 @@
 namespace Password.Core;
 
-public static class Constants
+internal static class Constants
 {
     public const string LowerLetters = "abcdefghijklmnopqrstuvwxyz";
     public const string UpperLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

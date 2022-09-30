@@ -5,9 +5,9 @@ using Xunit.Sdk;
 
 namespace Password.UnitTests;
 
-public static class AssertHelpers
+internal static class AssertHelpers
 {
-    public static void Count<T>(IEnumerable<T> collection, Predicate<T> check, int times)
+    internal static void Count<T>(IEnumerable<T> collection, Predicate<T> check, int times)
     {
         ArgumentNullException.ThrowIfNull(collection, nameof(collection));
         ArgumentNullException.ThrowIfNull(check, nameof(check));

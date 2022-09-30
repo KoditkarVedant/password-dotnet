@@ -7,7 +7,7 @@ public interface IPasswordGenerator
     string Generate(PasswordOptions options);
 }
 
-public class PasswordGenerator : IPasswordGenerator
+internal class PasswordGenerator : IPasswordGenerator
 {
     private readonly ICharDistribution _charDistribution;
     private readonly Dictionary<PasswordCharType, IRandomCharacterProvider> _randomCharacterProviders;

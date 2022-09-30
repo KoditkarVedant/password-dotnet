@@ -1,6 +1,6 @@
 ﻿namespace Password.Core;
 
-public class EvenCharDistribution : ICharDistribution
+internal class EvenCharDistribution : ICharDistribution
 {
     public Dictionary<PasswordCharType, int> Distribute(IEnumerable<PasswordCharType> charTypes, int totalPlaces)
     {

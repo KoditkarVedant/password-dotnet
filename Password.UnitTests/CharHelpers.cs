@@ -2,9 +2,9 @@
 
 namespace Password.UnitTests;
 
-public static class CharHelpers
+internal static class CharHelpers
 {
-    public static bool IsEmpty(char c) => c == char.MinValue;
+    internal static bool IsEmpty(char c) => c == char.MinValue;
 
-    public static bool IsPasswordSymbol(char c) => Constants.Symbols.Contains(c);
+    internal static bool IsPasswordSymbol(char c) => Constants.Symbols.Contains(c);
 }
