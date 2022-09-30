@@ -8,12 +8,16 @@ public interface IPasswordGenerator
 public class PasswordGenerator : IPasswordGenerator
 {
     private readonly ICharDistribution _charDistribution;
+    private readonly Dictionary<PasswordCharType, IRandomCharacterProvider> _randomCharacterProviders;
 
-    private readonly Dictionary<string, IRandomCharacterProvider> _randomCharacterProviders;
+    private readonly IReadOnlyList<PasswordCharType> DefaultEnabledCharTypes = new List<PasswordCharType>()
+    {
+        PasswordCharType.LowerCase
+    };
 
     public PasswordGenerator(
         ICharDistribution charDistribution,
-        Dictionary<string, IRandomCharacterProvider> randomCharacterProviders)
+        Dictionary<PasswordCharType, IRandomCharacterProvider> randomCharacterProviders)
     {
         _charDistribution = charDistribution;
         _randomCharacterProviders = randomCharacterProviders;
@@ -23,15 +27,15 @@ public class PasswordGenerator : IPasswordGenerator
     {
         char[] chars = new char[options.Length];
 
-        var charTypes = new Dictionary<string, bool>()
+        var charTypes = new Dictionary<PasswordCharType, bool>()
         {
-            { "LowerCase", options.IncludeLowerCaseLetters },
-            { "UpperCase", options.IncludeUpperCaseLetters },
-            { "Digits", options.IncludeDigits },
-            { "Symbols", options.IncludeSymbols }
+            { PasswordCharType.LowerCase, options.IncludeLowerCaseLetters },
+            { PasswordCharType.UpperCase, options.IncludeUpperCaseLetters },
+            { PasswordCharType.Digit, options.IncludeDigits },
+            { PasswordCharType.Symbol, options.IncludeSymbols }
         };
 
-        var enabledTypes = charTypes
+        IReadOnlyList<PasswordCharType> enabledTypes = charTypes
             .Where(x => x.Value)
             .Select(x => x.Key)
             .ToList();
@@ -39,7 +43,7 @@ public class PasswordGenerator : IPasswordGenerator
 
         if (enabledTypes.Count <= 0)
         {
-            enabledTypes = new List<string> { "LowerCase" };
+            enabledTypes = DefaultEnabledCharTypes;
         }
 
         var distribution = _charDistribution.Distribute(enabledTypes, options.Length);
@@ -48,30 +52,30 @@ public class PasswordGenerator : IPasswordGenerator
 
         if (options.IncludeLowerCaseLetters)
         {
-            AddRandomCharacters("LowerCase", distribution, chars, ref currentCharIndex);
+            AddRandomCharacters(PasswordCharType.LowerCase, distribution, chars, ref currentCharIndex);
         }
 
         if (options.IncludeUpperCaseLetters)
         {
-            AddRandomCharacters("UpperCase", distribution, chars, ref currentCharIndex);
+            AddRandomCharacters(PasswordCharType.UpperCase, distribution, chars, ref currentCharIndex);
         }
 
         if (options.IncludeDigits)
         {
-            AddRandomCharacters("Digits", distribution, chars, ref currentCharIndex);
+            AddRandomCharacters(PasswordCharType.Digit, distribution, chars, ref currentCharIndex);
         }
 
         if (options.IncludeSymbols)
         {
-            AddRandomCharacters("Symbols", distribution, chars, ref currentCharIndex);
+            AddRandomCharacters(PasswordCharType.Symbol, distribution, chars, ref currentCharIndex);
         }
 
         return new string(chars);
     }
 
     private void AddRandomCharacters(
-        string charType,
-        IReadOnlyDictionary<string, int> distribution,
+        PasswordCharType charType,
+        IReadOnlyDictionary<PasswordCharType, int> distribution,
         IList<char> chars,
         ref int currentCharIndex)
     {

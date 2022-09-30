@@ -16,12 +16,12 @@ public class PasswordGeneratorTests
 
         _passwordGenerator = new PasswordGenerator(
             _charDistributionMock.Object,
-            new Dictionary<string, IRandomCharacterProvider>
+            new Dictionary<PasswordCharType, IRandomCharacterProvider>
             {
-                { "LowerCase", new RandomLowerCaseLetterProvider() },
-                { "UpperCase", new RandomUpperCaseLetterProvider() },
-                { "Digits", new RandomDigitProvider() },
-                { "Symbols", new RandomSymbolProvider() }
+                { PasswordCharType.LowerCase, new RandomLowerCaseLetterProvider() },
+                { PasswordCharType.UpperCase, new RandomUpperCaseLetterProvider() },
+                { PasswordCharType.Digit, new RandomDigitProvider() },
+                { PasswordCharType.Symbol, new RandomSymbolProvider() }
             }
         );
     }
@@ -49,10 +49,10 @@ public class PasswordGeneratorTests
         // Arrange
         const int length = 10;
         _charDistributionMock
-            .Setup(x => x.Distribute(It.IsAny<IEnumerable<string>>(), length))
-            .Returns(new Dictionary<string, int>()
+            .Setup(x => x.Distribute(It.IsAny<IEnumerable<PasswordCharType>>(), length))
+            .Returns(new Dictionary<PasswordCharType, int>()
             {
-                { "LowerCase", 10 }
+                { PasswordCharType.LowerCase, 10 }
             });
 
         // Act
@@ -75,10 +75,10 @@ public class PasswordGeneratorTests
         // Arrange
         const int length = 10;
         _charDistributionMock
-            .Setup(x => x.Distribute(It.IsAny<IEnumerable<string>>(), length))
-            .Returns(new Dictionary<string, int>()
+            .Setup(x => x.Distribute(It.IsAny<IEnumerable<PasswordCharType>>(), length))
+            .Returns(new Dictionary<PasswordCharType, int>()
             {
-                { "UpperCase", 10 }
+                { PasswordCharType.UpperCase, 10 }
             });
 
         // Act
@@ -101,11 +101,11 @@ public class PasswordGeneratorTests
         // Arrange
         const int length = 10;
         _charDistributionMock
-            .Setup(x => x.Distribute(It.IsAny<IEnumerable<string>>(), length))
-            .Returns(new Dictionary<string, int>()
+            .Setup(x => x.Distribute(It.IsAny<IEnumerable<PasswordCharType>>(), length))
+            .Returns(new Dictionary<PasswordCharType, int>()
             {
-                { "LowerCase", 5 },
-                { "UpperCase", 5 }
+                { PasswordCharType.LowerCase, 5 },
+                { PasswordCharType.UpperCase, 5 }
             });
 
         // Act
@@ -130,12 +130,12 @@ public class PasswordGeneratorTests
         // Arrange
         const int length = 10;
         _charDistributionMock
-            .Setup(x => x.Distribute(It.IsAny<IEnumerable<string>>(), length))
-            .Returns(new Dictionary<string, int>()
+            .Setup(x => x.Distribute(It.IsAny<IEnumerable<PasswordCharType>>(), length))
+            .Returns(new Dictionary<PasswordCharType, int>()
             {
-                { "LowerCase", 4 },
-                { "UpperCase", 3 },
-                { "Digits", 3 }
+                { PasswordCharType.LowerCase, 4 },
+                { PasswordCharType.UpperCase, 3 },
+                { PasswordCharType.Digit, 3 }
             });
 
         // Act
@@ -162,13 +162,13 @@ public class PasswordGeneratorTests
         // Arrange
         const int length = 10;
         _charDistributionMock
-            .Setup(x => x.Distribute(It.IsAny<IEnumerable<string>>(), length))
-            .Returns(new Dictionary<string, int>()
+            .Setup(x => x.Distribute(It.IsAny<IEnumerable<PasswordCharType>>(), length))
+            .Returns(new Dictionary<PasswordCharType, int>()
             {
-                { "LowerCase", 3 },
-                { "UpperCase", 3 },
-                { "Digits", 2 },
-                { "Symbols", 2 },
+                { PasswordCharType.LowerCase, 3 },
+                { PasswordCharType.UpperCase, 3 },
+                { PasswordCharType.Digit, 2 },
+                { PasswordCharType.Symbol, 2 },
             });
 
         // Act

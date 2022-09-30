@@ -2,7 +2,7 @@
 
 public class EvenCharDistribution : ICharDistribution
 {
-    public Dictionary<string, int> Distribute(IEnumerable<string> charTypes, int totalPlaces)
+    public Dictionary<PasswordCharType, int> Distribute(IEnumerable<PasswordCharType> charTypes, int totalPlaces)
     {
         ArgumentNullException.ThrowIfNull(charTypes);
 
@@ -13,7 +13,7 @@ public class EvenCharDistribution : ICharDistribution
         var maxPlaces = minimumPlaces + 1;
         var remainingPlaces = totalPlaces % charTypeCount;
 
-        var result = new Dictionary<string, int>(charTypeCount);
+        var result = new Dictionary<PasswordCharType, int>(charTypeCount);
         foreach (var (index, type) in charTypeList.Select((item, index) => (index, item)))
         {
             result[type] = ShouldGetMaxPlaces(index) ? maxPlaces : minimumPlaces;
