@@ -145,4 +145,39 @@ public class PasswordGeneratorTests
         AssertHelpers.Count(chars, char.IsLower, 4);
         AssertHelpers.Count(chars, char.IsDigit, 3);
     }
+
+    [Fact]
+    public void Should_Return_Password_With_Upper_Lower_Digits_And_Symbols()
+    {
+        // Arrange
+        const int length = 10;
+        _charDistributionMock
+            .Setup(x => x.Distribute(It.IsAny<IEnumerable<string>>(), length))
+            .Returns(new Dictionary<string, int>()
+            {
+                { "LowerCase", 3 },
+                { "UpperCase", 3 },
+                { "Digits", 2 },
+                { "Symbols", 2 },
+            });
+
+        // Act
+        var password = _passwordGenerator.Generate(new PasswordOptions
+        {
+            Length = length,
+            IncludeLowerCaseLetters = true,
+            IncludeUpperCaseLetters = true,
+            IncludeDigits = true,
+            IncludeSymbols = true
+        });
+
+        // Assert
+        Assert.Equal(length, password.Length);
+        var chars = password.ToCharArray();
+        Assert.DoesNotContain(chars, CharHelpers.IsEmpty);
+        AssertHelpers.Count(chars, char.IsUpper, 3);
+        AssertHelpers.Count(chars, char.IsLower, 3);
+        AssertHelpers.Count(chars, char.IsDigit, 2);
+        AssertHelpers.Count(chars, CharHelpers.IsPasswordSymbol, 2);
+    }
 }

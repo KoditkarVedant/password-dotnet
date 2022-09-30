@@ -6,4 +6,5 @@ public class PasswordOptions
     public bool IncludeLowerCaseLetters { get; set; }
     public bool IncludeUpperCaseLetters { get; set; }
     public bool IncludeDigits { get; set; }
+    public bool IncludeSymbols { get; set; }
 }

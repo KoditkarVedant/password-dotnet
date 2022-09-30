@@ -22,7 +22,8 @@ public class PasswordGenerator : IPasswordGenerator
         {
             { "LowerCase", options.IncludeLowerCaseLetters },
             { "UpperCase", options.IncludeUpperCaseLetters },
-            { "Digits", options.IncludeDigits }
+            { "Digits", options.IncludeDigits },
+            { "Symbols", options.IncludeSymbols }
         };
 
         var enabledTypes = charTypes
@@ -69,6 +70,17 @@ public class PasswordGenerator : IPasswordGenerator
                 var randomDigitCharacterIndex = Random.Shared.Next(0, Constants.Digits.Length);
 
                 chars[currentCharIndex] = Constants.Digits[randomDigitCharacterIndex];
+                currentCharIndex++;
+            }
+        }
+
+        if (options.IncludeSymbols)
+        {
+            for (var i = 0; i < distribution["Symbols"]; i++)
+            {
+                var randomSymbolCharacterIndex = Random.Shared.Next(0, Constants.Symbols.Length);
+
+                chars[currentCharIndex] = Constants.Symbols[randomSymbolCharacterIndex];
                 currentCharIndex++;
             }
         }
