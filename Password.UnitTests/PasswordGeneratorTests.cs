@@ -14,14 +14,15 @@ public class PasswordGeneratorTests
     {
         _charDistributionMock = new Mock<ICharDistribution>();
 
+        var systemSharedRandomNumberGenerator = new SystemSharedRandomNumberGenerator();
         _passwordGenerator = new PasswordGenerator(
             _charDistributionMock.Object,
             new Dictionary<PasswordCharType, IRandomCharacterProvider>
             {
-                { PasswordCharType.LowerCase, new RandomLowerCaseLetterProvider() },
-                { PasswordCharType.UpperCase, new RandomUpperCaseLetterProvider() },
-                { PasswordCharType.Digit, new RandomDigitProvider() },
-                { PasswordCharType.Symbol, new RandomSymbolProvider() }
+                { PasswordCharType.LowerCase, new RandomLowerCaseLetterProvider(systemSharedRandomNumberGenerator) },
+                { PasswordCharType.UpperCase, new RandomUpperCaseLetterProvider(systemSharedRandomNumberGenerator) },
+                { PasswordCharType.Digit, new RandomDigitProvider(systemSharedRandomNumberGenerator) },
+                { PasswordCharType.Symbol, new RandomSymbolProvider(systemSharedRandomNumberGenerator) }
             }
         );
     }
