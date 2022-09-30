@@ -48,6 +48,7 @@ public class PasswordGenerator : IPasswordGenerator
 
         if (enabledTypes.Count <= 0)
         {
+            options.IncludeLowerCaseLetters = true;
             enabledTypes = DefaultEnabledCharTypes;
         }
 

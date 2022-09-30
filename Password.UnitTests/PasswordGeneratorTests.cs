@@ -57,11 +57,18 @@ public class PasswordGeneratorTests
         AssertHelpers.Count(password, char.IsSymbol, 0);
     }
 
-    [Fact(Skip = "Missing Feature: if user doesn't include any char type - create a password with only lowercase char")]
+    [Fact]
     public void Should_Return_Password_Containing_Only_LowerLetters_If_No_Character_Type_Included()
     {
         // Arrange
         const int length = 10;
+
+        _charDistributionMock
+            .Setup(x => x.Distribute(It.IsAny<IEnumerable<PasswordCharType>>(), length))
+            .Returns(new Dictionary<PasswordCharType, int>()
+            {
+                { PasswordCharType.LowerCase, length }
+            });
 
         // Act
         var password = _passwordGenerator.Generate(new PasswordOptions
