@@ -10,7 +10,7 @@ public class PasswordGenerator : IPasswordGenerator
     private readonly ICharDistribution _charDistribution;
     private readonly Dictionary<PasswordCharType, IRandomCharacterProvider> _randomCharacterProviders;
 
-    private readonly IReadOnlyList<PasswordCharType> DefaultEnabledCharTypes = new List<PasswordCharType>()
+    private static readonly IReadOnlyList<PasswordCharType> DefaultEnabledCharTypes = new List<PasswordCharType>()
     {
         PasswordCharType.LowerCase
     };
