@@ -28,6 +28,9 @@ public class PasswordGeneratorTests
         });
 
         Assert.Equal(length, password.Length);
+        var passwordChars = password.ToCharArray();
+        // TODO: Make sure if user doesn't include any type of character then the password should be all lowercase.
+        AssertHelpers.Count(password, CharHelpers.IsEmpty, length);
     }
 
     [Fact]
@@ -53,7 +56,7 @@ public class PasswordGeneratorTests
         Assert.Equal(length, password.Length);
         var chars = password.ToCharArray();
         Assert.DoesNotContain(chars, CharHelpers.IsEmpty);
-        Assert.Contains(password.ToCharArray(), char.IsLower);
+        AssertHelpers.Count(password.ToCharArray(), char.IsLower, length);
     }
 
     [Fact]
@@ -79,7 +82,7 @@ public class PasswordGeneratorTests
         Assert.Equal(length, password.Length);
         var chars = password.ToCharArray();
         Assert.DoesNotContain(chars, CharHelpers.IsEmpty);
-        Assert.Contains(password.ToCharArray(), char.IsUpper);
+        AssertHelpers.Count(password.ToCharArray(), char.IsUpper, length);
     }
 
     [Fact]
@@ -107,8 +110,8 @@ public class PasswordGeneratorTests
         Assert.Equal(length, password.Length);
         var chars = password.ToCharArray();
         Assert.DoesNotContain(chars, CharHelpers.IsEmpty);
-        Assert.Contains(chars, char.IsUpper);
-        Assert.Contains(chars, char.IsLower);
+        AssertHelpers.Count(chars, char.IsUpper, 5);
+        AssertHelpers.Count(chars, char.IsLower, 5);
     }
 
     [Fact]
@@ -138,8 +141,8 @@ public class PasswordGeneratorTests
         Assert.Equal(length, password.Length);
         var chars = password.ToCharArray();
         Assert.DoesNotContain(chars, CharHelpers.IsEmpty);
-        Assert.Contains(chars, char.IsUpper);
-        Assert.Contains(chars, char.IsLower);
-        Assert.Contains(chars, char.IsDigit);
+        AssertHelpers.Count(chars, char.IsUpper, 3);
+        AssertHelpers.Count(chars, char.IsLower, 4);
+        AssertHelpers.Count(chars, char.IsDigit, 3);
     }
 }
