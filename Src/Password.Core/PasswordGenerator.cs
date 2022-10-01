@@ -4,6 +4,7 @@ namespace Password.Core;
 
 public interface IPasswordGenerator
 {
+    string Generate();
     string Generate(PasswordOptions options);
 }
 
@@ -27,6 +28,8 @@ internal class PasswordGenerator : IPasswordGenerator
         _randomCharacterProviders = randomCharacterProviders;
         _randomNumberGenerator = randomNumberGenerator;
     }
+
+    public string Generate() => Generate(new PasswordOptions());
 
     public string Generate(PasswordOptions options) => InternalGenerate(PasswordOptionsMerger.Merge(options));
 
