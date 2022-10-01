@@ -7,5 +7,12 @@ public interface IRandomNumberGenerator
 
 public class SystemSharedRandomNumberGenerator : IRandomNumberGenerator
 {
-    public int Next(int minValue, int maxValue) => Random.Shared.Next(minValue, maxValue);
+    private readonly Random _random;
+
+    public SystemSharedRandomNumberGenerator()
+    {
+        _random = new Random();
+    }
+
+    public int Next(int minValue, int maxValue) => _random.Next(minValue, maxValue);
 }

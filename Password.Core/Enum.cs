@@ -28,6 +28,9 @@ public abstract class Enum<T> : IEquatable<Enum<T>>
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(Id, Name);
+        unchecked
+        {
+            return (EqualityComparer<T>.Default.GetHashCode(Id) * 397) ^ Name.GetHashCode();
+        }
     }
 }

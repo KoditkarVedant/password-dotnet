@@ -4,7 +4,10 @@ internal class EvenCharDistribution : ICharDistribution
 {
     public Dictionary<PasswordCharType, int> Distribute(IEnumerable<PasswordCharType> charTypes, int totalPlaces)
     {
-        ArgumentNullException.ThrowIfNull(charTypes);
+        if (charTypes is null)
+        {
+            throw new ArgumentNullException(nameof(charTypes));
+        }
 
         var charTypeList = charTypes.ToList();
         var charTypeCount = charTypeList.Count;

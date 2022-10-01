@@ -37,8 +37,11 @@ internal class PasswordGenerator : IPasswordGenerator
 
         var passwordCharQueue = new PriorityQueue<char, int>(options.Length);
 
-        foreach (var (passwordCharType, totalCharsToAdd) in passwordCharDistribution)
+        foreach (var passwordCharTypeDistribution in passwordCharDistribution)
         {
+            var passwordCharType = passwordCharTypeDistribution.Key;
+            var totalCharsToAdd = passwordCharTypeDistribution.Value;
+
             var provider = _randomCharacterProviders[passwordCharType];
             for (var i = 0; i < totalCharsToAdd; i++)
             {
@@ -54,7 +57,7 @@ internal class PasswordGenerator : IPasswordGenerator
     private static string BuildPasswordString(PriorityQueue<char, int> passwordCharQueue)
     {
         var passwordBuilder = new StringBuilder(passwordCharQueue.Count);
-        while (passwordCharQueue.TryDequeue(out var element, out _))
+        while (passwordCharQueue.TryDequeue(out var element))
         {
             passwordBuilder.Append(element);
         }
