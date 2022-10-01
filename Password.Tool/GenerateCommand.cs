@@ -1,5 +1,4 @@
 ﻿using System.CommandLine;
-using System.Windows.Input;
 using Password.Core;
 
 namespace Password.Tool;
