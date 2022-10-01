@@ -21,6 +21,6 @@ internal class EvenCharDistribution : ICharDistribution
 
         return result;
 
-        bool ShouldGetMaxPlaces(int typeIndex) => typeIndex < charTypeCount - remainingPlaces - 1;
+        bool ShouldGetMaxPlaces(int typeIndex) => typeIndex < remainingPlaces;
     }
 }
